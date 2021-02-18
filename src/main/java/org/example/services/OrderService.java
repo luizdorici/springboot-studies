@@ -1,0 +1,26 @@
+package org.example.services;
+
+import org.example.domain.Order;
+import org.example.repositories.OrderRepository;
+import org.example.services.exceptions.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+public class OrderService {
+
+    private final OrderRepository repository;
+
+    @Autowired
+    OrderService(OrderRepository repository) {
+        this.repository = repository;
+    }
+
+    public Order findById(Integer id) {
+        Optional<Order> obj = repository.findById(id);
+        return obj.orElseThrow(() -> new ObjectNotFoundException(
+                "Object not found! Id: " + id + ", Type: " + Order.class.getName()));
+    }
+}
