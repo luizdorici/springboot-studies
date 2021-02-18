@@ -72,7 +72,7 @@ public class ClientService {
         try {
             repository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityException("Not possible to exclude a client with related entities");
+            throw new DataIntegrityException("Not possible to exclude a client with products related");
         }
     }
 
