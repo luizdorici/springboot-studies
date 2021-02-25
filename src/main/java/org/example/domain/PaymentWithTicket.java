@@ -1,12 +1,14 @@
 package org.example.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.example.domain.enums.PaymentState;
 
 import javax.persistence.Entity;
 import java.util.Date;
 
 @Entity
+@JsonTypeName("pagamentoComBoleto")
 public class PaymentWithTicket extends Payment{
 
     private static final long serialVersionUID = 1L;
