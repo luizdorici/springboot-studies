@@ -2,9 +2,9 @@ package org.example.domain.enums;
 
 public enum PaymentState {
 
-    PENDENTE(1, "Pagamento Pendente"),
-    QUITADO(2, "Pedido Pago"),
-    CANCELADO(3, "Pedido Cancelado");
+    PENDENTE(1, "Pendente"),
+    QUITADO(2, "Pago"),
+    CANCELADO(3, "Cancelado");
 
     private int code;
     private String description;

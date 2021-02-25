@@ -33,6 +33,9 @@ public class OrderService {
     private ProductService productService;
 
     @Autowired
+    private ClientService clienteService;
+
+    @Autowired
     OrderService(OrderRepository repository) {
         this.repository = repository;
     }
@@ -47,6 +50,7 @@ public class OrderService {
     public Order insert(Order obj) {
         obj.setId(null);
         obj.setInstant(new Date());
+        obj.setClient(clienteService.findById(obj.getClient().getId()));
         obj.getPayment().setStatus(PaymentState.PENDENTE);
         obj.getPayment().setOrder(obj);
         if(obj.getPayment()  instanceof PaymentWithTicket) {
@@ -59,10 +63,12 @@ public class OrderService {
 
         for(OrderItem item : obj.getItems()) {
             item.setDiscount(0.0);
-            item.setPrice(productService.findById(item.getProduct().getId()).getPrice());
+            item.setProduct(productService.findById(item.getProduct().getId()));
+            item.setPrice(item.getProduct().getPrice());
             item.setOrder(obj);
         }
         orderItemRepository.saveAll(obj.getItems());
+        System.out.println(obj);
         return obj;
     }
 }
