@@ -36,6 +36,9 @@ public class OrderService {
     private ClientService clienteService;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     OrderService(OrderRepository repository) {
         this.repository = repository;
     }
@@ -68,7 +71,7 @@ public class OrderService {
             item.setOrder(obj);
         }
         orderItemRepository.saveAll(obj.getItems());
-        System.out.println(obj);
+        emailService.sendOrderConfirmationEmail(obj);
         return obj;
     }
 }
