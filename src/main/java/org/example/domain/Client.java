@@ -2,10 +2,12 @@ package org.example.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.example.domain.enums.ClientType;
+import org.example.domain.enums.Profile;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Client implements Serializable {
@@ -32,11 +34,16 @@ public class Client implements Serializable {
     @CollectionTable(name = "PHONE")
     private Set<String> phones = new HashSet<>();
 
+    @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name = "PROFILES")
+    private Set<Integer> profiles = new HashSet<>();
+
     @JsonIgnore
     @OneToMany(mappedBy = "client")
     private List<Order> orders = new ArrayList<>();
 
     public Client() {
+        addProfile(Profile.CLIENT);
     }
 
     public Client(Integer id, String name, String email, String cpfOrCnpj, ClientType type, String password) {
@@ -46,6 +53,7 @@ public class Client implements Serializable {
         this.cpfOrCnpj = cpfOrCnpj;
         this.type = (type == null) ? null : type.getCode();
         this.password = password;
+        addProfile(Profile.CLIENT);
     }
 
     public Integer getId() {
@@ -94,6 +102,14 @@ public class Client implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Profile> getProfiles() {
+        return profiles.stream().map(x -> Profile.toEnum(x)).collect(Collectors.toSet());
+    }
+
+    public void addProfile(Profile profile) {
+        profiles.add(profile.getCode());
     }
 
     public List<Address> getAddresses() {

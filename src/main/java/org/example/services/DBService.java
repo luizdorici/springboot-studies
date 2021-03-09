@@ -3,6 +3,7 @@ package org.example.services;
 import org.example.domain.*;
 import org.example.domain.enums.ClientType;
 import org.example.domain.enums.PaymentState;
+import org.example.domain.enums.Profile;
 import org.example.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -95,17 +96,22 @@ public class DBService {
         stateRepository.saveAll(Arrays.asList(st1,st2));
         cityRepository.saveAll(Arrays.asList(ct1,ct2,ct3));
 
-        Client client = new Client(null, "Maria Silva", "luizdorici@gmail.com", "11111111111", ClientType.PESSOAFISICA, passwordEncoder.encode("123"));
-
+        Client client = new Client(null, "Maria Silva", "luizdorici@gmail.com", "80129950009", ClientType.PESSOAFISICA, passwordEncoder.encode("123"));
         client.getPhones().addAll(Arrays.asList("2352636", "25242563"));
+
+        Client client2 = new Client(null, "Ana Silva", "lofsaito@outlook.com", "77912311076", ClientType.PESSOAFISICA, passwordEncoder.encode("123"));
+        client2.getPhones().addAll(Arrays.asList("2552629", "25837566"));
+        client2.addProfile(Profile.ADMIN);
 
         Address a1 = new Address(null, "Rua Flores", "300", "Apto 303", "Jardim", "13569000", client, ct1);
         Address a2 = new Address(null, "Avenida Matos", "105", "Sala 800", "Centro", "13560000", client, ct2);
+        Address a3 = new Address(null, "Avenida Floriano", "2106", null, "Centro", "13430000", client2, ct2);
 
         client.getAddresses().addAll(Arrays.asList(a1,a2));
+        client.getAddresses().addAll(Arrays.asList(a3));
 
-        clientRepository.saveAll(Arrays.asList(client));
-        addressRepository.saveAll(Arrays.asList(a1,a2));
+        clientRepository.saveAll(Arrays.asList(client, client2));
+        addressRepository.saveAll(Arrays.asList(a1,a2, a3));
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
