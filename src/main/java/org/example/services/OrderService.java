@@ -1,14 +1,17 @@
 package org.example.services;
 
-import org.example.domain.Order;
-import org.example.domain.OrderItem;
-import org.example.domain.PaymentWithTicket;
+import org.example.domain.*;
 import org.example.domain.enums.PaymentState;
 import org.example.repositories.OrderItemRepository;
 import org.example.repositories.OrderRepository;
 import org.example.repositories.PaymentRepository;
+import org.example.security.UserSS;
+import org.example.services.exceptions.AuthorizationException;
 import org.example.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,5 +76,15 @@ public class OrderService {
         orderItemRepository.saveAll(obj.getItems());
         emailService.sendOrderConfirmationHtmlEmail(obj);
         return obj;
+    }
+
+    public Page<Order> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+        UserSS user = UserService.authenticated();
+
+        if(user == null) throw new AuthorizationException("Acesso negado");
+
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        Client client = clienteService.findById(user.getId());
+        return repository.findByClient(client, pageRequest);
     }
 }
