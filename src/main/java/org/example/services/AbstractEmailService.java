@@ -1,5 +1,6 @@
 package org.example.services;
 
+import org.example.domain.Client;
 import org.example.domain.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,5 +66,21 @@ public abstract class AbstractEmailService implements EmailService {
         mmh.setSentDate(new Date(System.currentTimeMillis()));
         mmh.setText(htmlFromTemplateOrder(obj), true);
         return mm;
+    }
+
+    @Override
+    public void sendNewPasswordEmail(Client client, String newPass) {
+        SimpleMailMessage smm = prepareNewPasswordEmail(client, newPass);
+        sendEmail(smm);
+    }
+
+    protected SimpleMailMessage prepareNewPasswordEmail(Client client, String newPass) {
+        SimpleMailMessage smm = new SimpleMailMessage();
+        smm.setTo(client.getEmail());
+        smm.setFrom(sender);
+        smm.setSubject("Solicitação de nova senha");
+        smm.setSentDate(new Date(System.currentTimeMillis()));
+        smm.setText("Nova senha: " + newPass);
+        return smm;
     }
 }
