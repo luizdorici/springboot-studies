@@ -4,11 +4,14 @@ import org.example.domain.Address;
 import org.example.domain.City;
 import org.example.domain.Client;
 import org.example.domain.enums.ClientType;
+import org.example.domain.enums.Profile;
 import org.example.dto.ClientDTO;
 import org.example.dto.ClientNewDTO;
 import org.example.repositories.AddressRepository;
 import org.example.repositories.CityRepository;
 import org.example.repositories.ClientRepository;
+import org.example.security.UserSS;
+import org.example.services.exceptions.AuthorizationException;
 import org.example.services.exceptions.DataIntegrityException;
 import org.example.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,11 @@ public class ClientService {
     }
 
     public Client findById(Integer id) {
+
+        UserSS user = UserService.authenticated();
+        if(user == null || !user.hasRole(Profile.ADMIN) && !id.equals(user.getId()))
+            throw new AuthorizationException("Acesso negado");
+
         Optional<Client> obj = repository.findById(id);
         return obj.orElseThrow(() -> new ObjectNotFoundException(
                 "Object not found! Id: " + id + ", Type: " + Client.class.getName()));
